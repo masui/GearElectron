@@ -10,15 +10,31 @@ app.on('window-all-closed', function () {
     app.quit();
 });
 
-var fs = require('fs');
-fs.writeFile('/tmp/log.txt', process.env['VIDEOM_USER'] , function (err) {
-    console.log(err);
-});
+//
+// ~/.gear に、ログインサイトごとのパスワードを書いておく
+// 
+// {
+//    "video.masuilab.org": {
+//      "user": "username",
+//      "pass": "@#$%^&*"
+//   }
+// }
 
+var conffile = process.env['HOME'] + "/.gear";
+var gearconf = {};
+var fs = require('fs');
+try {
+    gearconf = JSON.parse(fs.readFileSync(conffile, 'utf8'));
+} catch(e) {
+    console.log(e);
+}
 
 app.on('login', function(event, webContents, request, authInfo, callback) {
-  event.preventDefault();
-  callback(process.env['VIDEOM_USER'], process.env['VIDEOM_PASS']);
+    event.preventDefault();
+    var info = gearconf[authInfo.host];
+    if(info){
+	callback(info.user, info.pass);
+    }
 });
 
 app.on('ready', function () {

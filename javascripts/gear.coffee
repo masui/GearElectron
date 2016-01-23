@@ -91,7 +91,7 @@ $ -> # document.ready()
         'always-on-top': false
       #$.contentswin.on 'closed', ()->
       #  $.contentswin = null
-      $.contentswin.showInactive() # フォーカスしない
+      # $.contentswin.showInactive() # フォーカスしない
 
   if singleWindow
     $('#menu').css('left','200pt')
@@ -103,7 +103,8 @@ $ -> # document.ready()
     calc data.children[0]
     expandTimeout = setTimeout expand, ExpandTime
 
-  $(window).show()
+  window.show()
+  # $(window).focus()
 
 $(window).on 'closed', ()->
   $.contentswin.close()
@@ -309,6 +310,10 @@ display = (newNodeList) -> # calc()で計算したリストを表示
                 complete: ->
                   typeCount = 2
                   refresh()
+  # $.contentswin.showInactive()
+  # $(window).show()
+  # $(window).focus()
+  window.focus()
 
 move = (delta, shrinkMode) -> # 視点移動
   if typeCount <= 2
