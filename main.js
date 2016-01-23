@@ -1,10 +1,12 @@
+//
+// Electron版GearのメインNodeプログラム
+//
 'use strict';
 
 const app = require('app');
 const BrowserWindow = require('browser-window');
 
 let menuWindow = null;
-let contentsWindow = null;
 
 app.on('window-all-closed', function () {
     app.quit();

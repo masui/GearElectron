@@ -28,7 +28,7 @@ json = 'http://www.pitecan.com/gear.cgi?format=json'
 useAudio =           false       unless useAudio?            # 項目を発声するかどうか
 sayCGI =  "http://localhost/~masui/say.cgi" unless sayCGI?
 
-node_app = (typeof(require) != 'undefined') # node-webkitによるアプリかどうか
+node_app = (typeof(require) != 'undefined') # node-webkitとかElectronとかによるアプリかどうか
 use_linda = (typeof(io) != 'undefined')     # Lindaを使うかどうか
 ts = null
 linda = null
@@ -71,27 +71,28 @@ $ -> # document.ready()
   if showContents
     if singleWindow
     else # コンテンツ表示ウィンドウを開く
-      height = screen.availHeight
-      menuwidth = Math.min screen.availWidth / 5, 300
-      width = screen.availWidth - menuwidth
-      param = "top=0,left=#{menuwidth},height=#{height},width=#{width},scrollbars=yes"
-      # $.contentswin = window.open "null.html","Contents",param
-      #
-      Screen = require('screen');
-      size = Screen.getPrimaryDisplay().workAreaSize;
-      $.contentswin = new RemoteBrowserWindow
-        x: Math.floor(size.width / 5)
-        y: 0
-        width: Math.floor(size.width * 4 / 5)
-        height: size.height
-        frame: false
-        show: true
-        transparent: false
-        resizable: true
-        'always-on-top': false
-      #$.contentswin.on 'closed', ()->
-      #  $.contentswin = null
-      # $.contentswin.showInactive() # フォーカスしない
+      if node_app
+        Screen = require('screen');
+        size = Screen.getPrimaryDisplay().workAreaSize;
+        $.contentswin = new RemoteBrowserWindow
+          x: Math.floor(size.width / 5)
+          y: 0
+          width: Math.floor(size.width * 4 / 5)
+          height: size.height
+          frame: false
+          show: true
+          transparent: false
+          resizable: true
+          'always-on-top': false
+        #$.contentswin.on 'closed', ()->
+        #  $.contentswin = null
+        # $.contentswin.showInactive() # フォーカスしない
+      else
+        height = screen.availHeight
+        menuwidth = Math.min screen.availWidth / 5, 300
+        width = screen.availWidth - menuwidth
+        param = "top=0,left=#{menuwidth},height=#{height},width=#{width},scrollbars=yes"
+        $.contentswin = window.open "","Contents",param
 
   if singleWindow
     $('#menu').css('left','200pt')
@@ -236,9 +237,10 @@ display = (newNodeList) -> # calc()で計算したリストを表示
           $('#image').css 'display','none'
           $('#iframe').attr 'src',url
     else
-      # ipc.send 'openurl', url
-      $.contentswin.loadURL url
-      #	$.contentswin.location.href = url
+      if node_app
+        $.contentswin.loadURL url
+      else
+        $.contentswin.location.href = url
 
   # 新しいノードの表示位置計算
   node = nodeList[0]
