@@ -10,12 +10,18 @@ run:
 	./node_modules/.bin/electron .
 
 dmg: compile
-	asar pack . /tmp/Gear.app/Contents/Resources/app.asar
-	/bin/rm -f /tmp/Gear.dmg
-	hdiutil create -srcfolder /tmp/Gear.app -volname Gear /tmp/Gear.dmg
+	asar pack . /tmp/electron/Gear.app/Contents/Resources/app.asar
+	/bin/rm -f /tmp/electron/Gear.dmg
+	hdiutil create -srcfolder /tmp/electron/Gear.app -volname Gear /tmp/electron/Gear.dmg
 
 clean:
 	/bin/rm -r -f node_modules *~
 
 setup: clean
 	npm i electron-prebuilt
+
+template:
+	/bin/rm -r -f /tmp/electron
+	mkdir /tmp/electron
+	wget https://github.com/atom/electron/releases/download/v0.36.5/electron-v0.36.5-darwin-x64.zip -O /tmp/electron/electron.zip
+	cd /tmp/electron; unzip electron.zip; mv Electron.app  Gear.app
