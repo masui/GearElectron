@@ -10,6 +10,17 @@ app.on('window-all-closed', function () {
     app.quit();
 });
 
+var fs = require('fs');
+fs.writeFile('/tmp/log.txt', process.env['VIDEOM_USER'] , function (err) {
+    console.log(err);
+});
+
+
+app.on('login', function(event, webContents, request, authInfo, callback) {
+  event.preventDefault();
+  callback(process.env['VIDEOM_USER'], process.env['VIDEOM_PASS']);
+});
+
 app.on('ready', function () {
     const Screen = require('screen');
     const size = Screen.getPrimaryDisplay().workAreaSize;

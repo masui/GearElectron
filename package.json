@@ -1,7 +1,7 @@
 {
-  "name": "electron-test4",
+  "name": "GearElectron",
   "version": "1.0.0",
-  "description": "",
+  "description": "Gear implementation in Electron",
   "main": "main.js",
   "dependencies": {},
   "devDependencies": {},

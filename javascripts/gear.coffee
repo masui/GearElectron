@@ -8,14 +8,12 @@
 'use strict'
 
 remote = require 'remote'
-# alert remote
-
 RemoteBrowserWindow = remote.require 'browser-window'
 
 # index.html?root=test など
 
 gyazz = params['gyazz'] || 'http://gyazz.masuilab.org/Gear'
-gearname = params['root'] || "YouTube"
+gearname = params['root'] || "Videom" # masui
 
 useAnimation =       true        unless useAnimation?        # アニメーションを使うかどうか
 showContents =       true        unless showContents?        # メニューだけだでなく内容も表示するか
@@ -66,24 +64,6 @@ initData = (nodes,parent,level) -> # 木構造をセットアップ
     initData(node.children,node,level+1) if node.children
 
 $ -> # document.ready()
-  #if node_app
-  #  # v0.10からMacではこれが必要らしい
-  #  nw = require 'nw.gui'
-  #  win = nw.Window.get()
-  #  nativeMenuBar = new nw.Menu
-  #    type: "menubar"
-  #  if nativeMenuBar.createMacBuiltin
-  #    nativeMenuBar.createMacBuiltin "Gear",
-  #      hideEdit: true
-  #      hideWindow: true
-  #    win.menu = nativeMenuBar
-  #    window.addEventListener "resize", ->
-  #      win.enterFullscreen()
-  #    ,false
-
-  #if node_app # というかelectron
-  #  ipc = require('ipc');
-
   # 可能ならpaddle対応
   if use_linda
     setup_paddle()
