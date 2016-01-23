@@ -1,4 +1,4 @@
-.PHONY: data.json javascripts/gear.js javascripts/ltsv.js
+.PHONY: javascripts/gear.js javascripts/ltsv.js
 
 compile: javascripts/gear.js javascripts/ltsv.js
 javascripts/gear.js: javascripts/gear.coffee
