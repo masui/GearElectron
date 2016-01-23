@@ -15,3 +15,9 @@ dmg: compile
 	asar pack . /tmp/Gear.app/Contents/Resources/app.asar
 	/bin/rm -f /tmp/Gear.dmg
 	hdiutil create -srcfolder /tmp/Gear.app -volname Gear /tmp/Gear.dmg
+
+clean:
+	/bin/rm -r -f node_modules *~
+
+setup: clean
+	npm i electron-prebuilt
