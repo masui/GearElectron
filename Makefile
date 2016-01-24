@@ -18,7 +18,7 @@ clean:
 	/bin/rm -r -f node_modules *~
 
 setup: clean
-	npm i electron-prebuilt
+	npm i
 
 template:
 	/bin/rm -r -f /tmp/electron

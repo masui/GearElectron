@@ -4,7 +4,9 @@
   "description": "Gear implementation in Electron",
   "main": "main.js",
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "electron-prebuilt": "^0.36.5"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
