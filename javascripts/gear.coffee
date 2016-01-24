@@ -7,14 +7,11 @@
 #
 'use strict'
 
-remote = require 'remote'
-RemoteBrowserWindow = remote.require 'browser-window'
-
 #
 # http://gyazz.masuilab.org/Gear/xxxxx のリストを利用
 #
 # ブラウザ版
-#   index.html?root=test など
+#   index.html?root=Videom など
 # Electron版
 #   ~/.gear で指定.
 #
@@ -30,18 +27,15 @@ autoexpand =         true        unless autoexpand?          # 自動展開(デ�
 pauseAtLevelChange = true        unless pauseAtLevelChange?
 dontShowSingleNode = true        unless dontShowSingleNode?  # 辞書に使うときとか
 singleWindow =       false       unless singleWindow?        # メニューとコンテンツを同じ画面にするかどうか
-json =               'data.json' unless json?
-json = 'http://www.pitecan.com/gear.cgi?format=json'
 
 # sayコマンドで読みあげる
 useAudio =           false       unless useAudio?            # 項目を発声するかどうか
 sayCGI =  "http://localhost/~masui/say.cgi" unless sayCGI?
 
-node_app = (typeof(require) != 'undefined') # node-webkitとかElectronとかによるアプリかどうか
+electron = (typeof(require) != 'undefined') # Electronかどうか
 use_linda = (typeof(io) != 'undefined')     # Lindaを使うかどうか
 ts = null
 linda = null
-# singleWindow = true if node_app
 
 nodeList = {}     # 表示可能ノードのリスト. nodeList[0]を中心に表示する
 oldNodeList = {}
@@ -61,8 +55,6 @@ hideTimeout = null
 typeCount = 0           # 連打したかどうか: 連打されてたら表示を行なう
 typeCountTimeout = null
 
-#ipc = null
-
 initData = (nodes,parent,level) -> # 木構造をセットアップ
   for i in [0...nodes.length]
     node = nodes[i]
@@ -73,14 +65,20 @@ initData = (nodes,parent,level) -> # 木構造をセットアップ
     initData(node.children,node,level+1) if node.children
 
 $ -> # document.ready()
-  # 可能ならpaddle対応
-  if use_linda
+  if use_linda  # 可能ならpaddle対応
     setup_paddle()
 
   if showContents
     if singleWindow
     else # コンテンツ表示ウィンドウを開く
-      if node_app
+      if electron
+        #
+        # Electronの場合はwindow.openで開いても location.href=... が使えない
+        # Remote機能を使ってメインのブラウザプロセスから開いてもらう
+        # ここでコンテンツウィンドウにフォーカスが当たってしまうのを防ぐ方法が不明 2016/01/24 10:35:37
+        #
+        remote = require 'remote'
+        RemoteBrowserWindow = remote.require 'browser-window'
         Screen = require('screen');
         size = Screen.getPrimaryDisplay().workAreaSize;
         $.contentswin = new RemoteBrowserWindow
@@ -113,6 +111,7 @@ $ -> # document.ready()
     calc data.children[0]
     expandTimeout = setTimeout expand, ExpandTime
 
+  # メニューウィンドウをフォーカスしたいのだがうまくいかない...
   window.show()
   # $(window).focus()
 
@@ -246,7 +245,7 @@ display = (newNodeList) -> # calc()で計算したリストを表示
           $('#image').css 'display','none'
           $('#iframe').attr 'src',url
     else
-      if node_app
+      if electron
         $.contentswin.loadURL url
       else
         $.contentswin.location.href = url
