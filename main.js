@@ -22,18 +22,20 @@ app.on('window-all-closed', function () {
 //   }
 // }
 
-var conffile = process.env['HOME'] + "/.gear";
-var gearconf = {};
+var conf = { root: "", gyazz: "" };
 var fs = require('fs');
 try {
-    gearconf = JSON.parse(fs.readFileSync(conffile, 'utf8'));
+    var conffile = process.env['HOME'] + "/.gear";
+    conf = JSON.parse(fs.readFileSync(conffile, 'utf8'));
 } catch(e) {
     console.log(e);
 }
 
+console.log(conf.root);
+
 app.on('login', function(event, webContents, request, authInfo, callback) {
     event.preventDefault();
-    var info = gearconf[authInfo.host];
+    var info = conf["auth"][authInfo.host];
     if(info){
 	callback(info.user, info.pass);
     }
@@ -55,7 +57,7 @@ app.on('ready', function () {
 	'always-on-top': true,
 	'node-integration': true
     });
-    menuWindow.loadURL(`file://${__dirname}/index.html`);
+    menuWindow.loadURL(`file://${__dirname}/index.html`+'?root='+conf.root+'&gyazz='+conf.gyazz);
     menuWindow.on('closed', function () {
 	menuWindow = null;
 	app.quit();

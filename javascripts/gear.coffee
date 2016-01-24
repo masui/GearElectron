@@ -1,7 +1,7 @@
 #
 # gear.js = 「超」ナビゲーション
 #
-# node-webkit / ブラウザでも動く
+# ブラウザ版 / Electron版
 # 
 # http://GitHub.com/masui/Gear
 #
@@ -10,10 +10,19 @@
 remote = require 'remote'
 RemoteBrowserWindow = remote.require 'browser-window'
 
-# index.html?root=test など
+#
+# http://gyazz.masuilab.org/Gear/xxxxx のリストを利用
+#
+# ブラウザ版
+#   index.html?root=test など
+# Electron版
+#   ~/.gear で指定.
+#
 
-gyazz = params['gyazz'] || 'http://gyazz.masuilab.org/Gear'
-gearname = params['root'] || "Videom" # masui
+gearname = params['root']
+gearname = 'Videom' if (!gearname || gearname == '')
+gyazz = params['gyazz']
+gyazz = 'http://gyazz.masuilab.org/Gear' if (!gyazz || gyazz == '')
 
 useAnimation =       true        unless useAnimation?        # アニメーションを使うかどうか
 showContents =       true        unless showContents?        # メニューだけだでなく内容も表示するか
