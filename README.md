@@ -14,9 +14,13 @@
 Videomを見る場合は```~/.gear``` に以下のようにJSONを記述
 
     {
-       "video.masuilab.org": {
-         "user": "username",
-         "pass": "password"
-       }
+        "gyazz": "http://gyazz.masuilab.org/Gear",
+        "root": "Videom",
+        "auth": {
+            "video.masuilab.org": {
+                "user": "username_for_videom",
+                "pass": "password_for_videom"
+            }
+        }
     }
 
