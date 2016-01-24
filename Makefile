@@ -1,10 +1,7 @@
 .PHONY: javascripts/gear.js javascripts/ltsv.js
 
-compile: javascripts/gear.js javascripts/ltsv.js
-javascripts/gear.js: javascripts/gear.coffee
-	coffee -c -b javascripts/gear.coffee
-javascripts/ltsv.js: javascripts/ltsv.coffee
-	coffee -c -b javascripts/ltsv.coffee
+compile:
+	./node_modules/.bin/coffee -c -b javascripts/*.coffee
 
 run:
 	./node_modules/.bin/electron .

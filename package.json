@@ -5,6 +5,7 @@
   "main": "main.js",
   "dependencies": {},
   "devDependencies": {
+    "coffee-script": "^1.10.0",
     "electron-prebuilt": "^0.36.5"
   },
   "scripts": {
