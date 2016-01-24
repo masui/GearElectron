@@ -1,7 +1,8 @@
 #
-# gear.js = 「超」ナビゲーション
+# Gear: 「超」ナビゲーション
 #
 # ブラウザ版 / Electron版
+#   現在チェックしてるのはElectron版だけ 2016/01/24 10:48:21
 # 
 # http://GitHub.com/masui/Gear
 #
@@ -17,19 +18,19 @@
 #
 
 gearname = params['root']
-gearname = 'Videom' if (!gearname || gearname == '')
+gearname = 'test' if (!gearname || gearname == '')
 gyazz = params['gyazz']
 gyazz = 'http://gyazz.masuilab.org/Gear' if (!gyazz || gyazz == '')
 
-useAnimation =       true        unless useAnimation?        # アニメーションを使うかどうか
-showContents =       true        unless showContents?        # メニューだけだでなく内容も表示するか
-autoexpand =         true        unless autoexpand?          # 自動展開(デフォルト動作)
-pauseAtLevelChange = true        unless pauseAtLevelChange?
-dontShowSingleNode = true        unless dontShowSingleNode?  # 辞書に使うときとか
-singleWindow =       false       unless singleWindow?        # メニューとコンテンツを同じ画面にするかどうか
+useAnimation =       true  unless useAnimation?        # アニメーションを使うかどうか
+showContents =       true  unless showContents?        # メニューだけだでなく内容も表示するか
+autoexpand =         true  unless autoexpand?          # 自動展開(デフォルト動作)
+pauseAtLevelChange = true  unless pauseAtLevelChange?
+dontShowSingleNode = true  unless dontShowSingleNode?  # 辞書に使うときとか
+singleWindow =       false unless singleWindow?        # メニューとコンテンツを同じ画面にするかどうか
 
 # sayコマンドで読みあげる
-useAudio =           false       unless useAudio?            # 項目を発声するかどうか
+useAudio =           false unless useAudio?            # 項目を発声するかどうか
 sayCGI =  "http://localhost/~masui/say.cgi" unless sayCGI?
 
 electron = (typeof(require) != 'undefined') # Electronかどうか
@@ -54,6 +55,8 @@ hideTimeout = null
 
 typeCount = 0           # 連打したかどうか: 連打されてたら表示を行なう
 typeCountTimeout = null
+
+contentswin = null
 
 initData = (nodes,parent,level) -> # 木構造をセットアップ
   for i in [0...nodes.length]
@@ -81,7 +84,7 @@ $ -> # document.ready()
         RemoteBrowserWindow = remote.require 'browser-window'
         Screen = require('screen');
         size = Screen.getPrimaryDisplay().workAreaSize;
-        $.contentswin = new RemoteBrowserWindow
+        contentswin = new RemoteBrowserWindow
           x: Math.floor(size.width / 5)
           y: 0
           width: Math.floor(size.width * 4 / 5)
@@ -91,15 +94,15 @@ $ -> # document.ready()
           transparent: false
           resizable: true
           'always-on-top': false
-        #$.contentswin.on 'closed', ()->
-        #  $.contentswin = null
-        # $.contentswin.showInactive() # フォーカスしない
+        #contentswin.on 'closed', ()->
+        #  contentswin = null
+        # contentswin.showInactive() # フォーカスしない
       else
         height = screen.availHeight
         menuwidth = Math.min screen.availWidth / 5, 300
         width = screen.availWidth - menuwidth
         param = "top=0,left=#{menuwidth},height=#{height},width=#{width},scrollbars=yes"
-        $.contentswin = window.open "","Contents",param
+        contentswin = window.open "","Contents",param
 
   if singleWindow
     $('#menu').css('left','200pt')
@@ -112,11 +115,11 @@ $ -> # document.ready()
     expandTimeout = setTimeout expand, ExpandTime
 
   # メニューウィンドウをフォーカスしたいのだがうまくいかない...
-  window.show()
+  # window.show()
   # $(window).focus()
 
 $(window).on 'closed', ()->
-  $.contentswin.close()
+  contentswin.close()
 
 refresh = -> # 不要DOMを始末する. 富豪的すぎるかも?
   span.show() for i, span of spans
@@ -246,9 +249,9 @@ display = (newNodeList) -> # calc()で計算したリストを表示
           $('#iframe').attr 'src',url
     else
       if electron
-        $.contentswin.loadURL url
+        contentswin.loadURL url
       else
-        $.contentswin.location.href = url
+        contentswin.location.href = url
 
   # 新しいノードの表示位置計算
   node = nodeList[0]
@@ -320,7 +323,7 @@ display = (newNodeList) -> # calc()で計算したリストを表示
                 complete: ->
                   typeCount = 2
                   refresh()
-  # $.contentswin.showInactive()
+  # contentswin.showInactive()
   # $(window).show()
   # $(window).focus()
   window.focus()
@@ -367,15 +370,16 @@ move = (delta, shrinkMode) -> # 視点移動
   false
 
 mousewheelevent =
-  if 'onwheel' in document # FF/Chrome/Safari
+  if electron
+    'mousewheel'
+  else if 'onwheel' in document # FF/Chrome/Safari
     'wheel'
   else if 'onmousewheel' in document
     'mousewheel'
   else
     'DOMMouseScroll'
 
-$(document).on mousewheelevent, (e) ->
-  # showmenu()
+$(window).on mousewheelevent, (e) ->
   e.preventDefault()
   delta =
     if e.originalEvent.deltaY

@@ -4,31 +4,11 @@
 #
 'use strict'
 
-#domready = 100
-#alert domready
-#domready = require('remote')
-#alert domready
-#alert typeof(require)
-
 isNode = (typeof(require) != "undefined")
-
-#if isNode
-#  request = require 'request'
-#  get = (url, callback) ->
-#    request.get url, (err, response, body) ->
-#      if !err
-#        callback body
-#  alert = (msg) ->
-#    console.log msg
-#else
-#  get = (url, callback) ->
-#    $.get url, (data) ->
-#      callback data
 
 get = (url, callback) ->
   $.get url, (data) ->
     callback data
-
 
 treeroot = []    # 全LTSVを取得するとき使われる木構造のトップ
 root = {}        # 取得したLTSVから生成された階層的データ
