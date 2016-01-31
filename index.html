@@ -3,6 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link rel="stylesheet" href="./stylesheets/gear.css" type="text/css">
+    <script src="./javascripts/jquery.js"></script>
     <script>
       var params = {};
       var pair = location.search.substring(1).split('&');
@@ -10,16 +11,18 @@
         var kv = pair[i].split('=');
         params[kv[0]] = kv[1];
       }
- 
+      // Electronの場合、jQueryをrequireで読み込み
       // http://qiita.com/pirosikick/items/72d11a8578c5c3327069
-      window.jQuery = window.$ = require('./javascripts/jquery');
+      if(typeof(require) != 'undefined'){
+        window.jQuery = window.$ = require('./javascripts/jquery');
+      }
       exports = {};
     </script>
     <script src="./javascripts/ltsv.js"></script>
     <script src="./javascripts/gear.js"></script>
   </head>
   <body>
-    <div id='menu'>
-    </div>
+    <div id='menu'></div>
+    <div id='contents'></div>
   </body>
 </html>

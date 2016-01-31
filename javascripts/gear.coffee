@@ -21,13 +21,14 @@ gearname = params['root']
 gearname = 'test' if (!gearname || gearname == '')
 gyazz = params['gyazz']
 gyazz = 'http://gyazz.masuilab.org/Gear' if (!gyazz || gyazz == '')
+singleWindow = if params['singlewin'] == 'true' then true else false
 
 useAnimation =       true  unless useAnimation?        # アニメーションを使うかどうか
 showContents =       true  unless showContents?        # メニューだけだでなく内容も表示するか
 autoexpand =         true  unless autoexpand?          # 自動展開(デフォルト動作)
 pauseAtLevelChange = true  unless pauseAtLevelChange?
 dontShowSingleNode = true  unless dontShowSingleNode?  # 辞書に使うときとか
-singleWindow =       false unless singleWindow?        # メニューとコンテンツを同じ画面にするかどうか
+# singleWindow =       false unless singleWindow?        # メニューとコンテンツを同じ画面にするかどうか
 
 # sayコマンドで読みあげる
 useAudio =           false unless useAudio?            # 項目を発声するかどうか
@@ -80,6 +81,8 @@ $ -> # document.ready()
         # Remote機能を使ってメインのブラウザプロセスから開いてもらう
         # ここでコンテンツウィンドウにフォーカスが当たってしまうのを防ぐ方法が不明 2016/01/24 10:35:37
         #
+        # メインのブラウザプロセスから開いてもらって、それをリモートコントロールすればいいのかも 2016/01/31 11:52:27
+        #
         remote = require 'remote'
         RemoteBrowserWindow = remote.require 'browser-window'
         Screen = require('screen');
@@ -116,7 +119,8 @@ $ -> # document.ready()
 
   # メニューウィンドウをフォーカスしたいのだがうまくいかない...
   # window.show()
-  # $(window).focus()
+  window.blur()
+  window.opener.focus()
 
 $(window).on 'closed', ()->
   contentswin.close()
@@ -326,6 +330,7 @@ display = (newNodeList) -> # calc()で計算したリストを表示
   # contentswin.showInactive()
   # $(window).show()
   # $(window).focus()
+  window.blur()
   window.focus()
 
 move = (delta, shrinkMode) -> # 視点移動

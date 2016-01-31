@@ -30,6 +30,7 @@ dump = (a, callback) ->
 
 processline = (line) ->
   m = line.match /^(\s*)(\S.*)$/
+  return unless m
   indent = m[1].length
   line = m[2]
   node = {}

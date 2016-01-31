@@ -14,6 +14,9 @@ dmg: compile
 	/bin/rm -f /tmp/electron/Gear.dmg
 	hdiutil create -srcfolder /tmp/electron/Gear.app -volname Gear /tmp/electron/Gear.dmg
 
+upload: dmg
+	scp /tmp/electron/Gear.dmg pitecan.com:/www/www.pitecan.com/tmp
+
 clean:
 	/bin/rm -r -f node_modules *~
 

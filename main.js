@@ -16,11 +16,17 @@ app.on('window-all-closed', function () {
 // ~/.gear に、ログインサイトごとのパスワードを書いておく
 // 
 // {
-//    "video.masuilab.org": {
-//      "user": "username",
-//      "pass": "@#$%^&*"
-//   }
+//     "gyazz": "http://gyazz.masuilab.org/Gear",
+//     "root": "test",
+//     "singlewin": false,
+//     "auth": {
+//         "video.masuilab.org": {
+//             "user": "username_for_videom",
+//             "pass": "password_for_videom"
+//         }
+//     }
 // }
+//
 
 var conf = { root: "", gyazz: "" };
 var fs = require('fs');
@@ -31,8 +37,9 @@ try {
     console.log(e);
 }
 
-console.log(conf.root);
-
+//
+// Basic認証対応
+//
 app.on('login', function(event, webContents, request, authInfo, callback) {
     event.preventDefault();
     var info = conf["auth"][authInfo.host];
@@ -57,7 +64,8 @@ app.on('ready', function () {
 	'always-on-top': true,
 	'node-integration': true
     });
-    menuWindow.loadURL(`file://${__dirname}/index.html`+'?root='+conf.root+'&gyazz='+conf.gyazz);
+    console.log(`file://${__dirname}/index.html?root=${conf.root}&gyazz=${conf.gyazz}&singlewin=${conf.singlewin}`);
+    menuWindow.loadURL(`file://${__dirname}/index.html?root=${conf.root}&gyazz=${conf.gyazz}&singlewin=${conf.singlewin}`);
     menuWindow.on('closed', function () {
 	menuWindow = null;
 	app.quit();
